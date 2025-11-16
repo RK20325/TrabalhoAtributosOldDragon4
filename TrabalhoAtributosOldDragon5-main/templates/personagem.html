@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personagem Criado</title>
+</head>
+<body>
+    <h1>Personagem Criado com Sucesso!</h1>
+    
+    <h2>{{ personagem.nome }}</h2>
+    
+    <h3>Atributos</h3>
+    <ul>
+        <li>Força (FOR): <strong>{{ personagem.atributos[0] }}</strong></li>
+        <li>Destreza (DES): <strong>{{ personagem.atributos[1] }}</strong></li>
+        <li>Constituição (CON): <strong>{{ personagem.atributos[2] }}</strong></li>
+        <li>Inteligência (INT): <strong>{{ personagem.atributos[3] }}</strong></li>
+        <li>Sabedoria (SAB): <strong>{{ personagem.atributos[4] }}</strong></li>
+        <li>Carisma (CAR): <strong>{{ personagem.atributos[5] }}</strong></li>
+    </ul>
+
+    <h3>Raça</h3>
+    <p><strong>Nome:</strong> {{ personagem.raca.__class__.__name__ }}</p>
+    <p><strong>Movimento:</strong> {{ personagem.raca.movimento }}</p>
+    <p><strong>Infravisão:</strong> {% if personagem.raca.infravisao %} Sim {% else %} Não {% endif %}</p>
+    <p><strong>Alinhamento:</strong> {{ personagem.raca.alinhamento }}</p>
+    <p><strong>Habilidades:</strong> {{ ', '.join(personagem.raca.habilidades) }}</p>
+
+    <h3>Classe</h3>
+    <p><strong>Nome:</strong> {{ personagem.classe.nome }}</p>
+    <p><strong>Dado de Vida:</strong> {{ personagem.classe.dado_vida }}</p>
+    <p><strong>Habilidades:</strong> {{ ', '.join(personagem.classe.habilidades) }}</p>
+    
+    <br>
+    <a href="/">Criar Outro Personagem</a>
+</body>
+</html>

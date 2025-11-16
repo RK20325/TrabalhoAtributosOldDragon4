@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personagem Criado!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="ficha">
+        <h2>Personagem Criado com Sucesso!</h2>
+        <p>O arquivo <strong>{{ personagem.nome.lower().replace(' ', '_') }}.json</strong> foi salvo!</p>
+        
+        <h3>{{ personagem.nome }}</h3>
+        
+        <h4>Atributos</h4>
+        <ul>
+            <li>Força (FOR): {{ personagem.atributos.FOR }} (Mod: {{ personagem.modificadores.FOR }})</li>
+            <li>Destreza (DES): {{ personagem.atributos.DES }} (Mod: {{ personagem.modificadores.DES }})</li>
+            <li>Constituição (CON): {{ personagem.atributos.CON }} (Mod: {{ personagem.modificadores.CON }})</li>
+            <li>Inteligência (INT): {{ personagem.atributos.INT }} (Mod: {{ personagem.modificadores.INT }})</li>
+            <li>Sabedoria (SAB): {{ personagem.atributos.SAB }} (Mod: {{ personagem.modificadores.SAB }})</li>
+            <li>Carisma (CAR): {{ personagem.atributos.CAR }} (Mod: {{ personagem.modificadores.CAR }})</li>
+        </ul>
+
+        <h4>Raça ({{ personagem.raca }})</h4>
+        <ul>
+            <li>Movimento: {{ personagem.movimento }}</li>
+            <li>Habilidades: {{ personagem.habilidades_raca }}</li>
+        </ul>
+
+        <h4>Classe ({{ personagem.classe }})</h4>
+        <ul>
+            <li>Dado de Vida: {{ personagem.dado_de_vida }}</li>
+            <li>Habilidades: {{ personagem.habilidades_classe }}</li>
+        </ul>
+
+        <a href="/">Criar Outro Personagem</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criador de Personagem OldDragon - Passo 1</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Criar Personagem OldDragon</h2>
+        
+        <form action="/criar-personagem" method="POST">
+            <div>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Seu Herói" required>
+            </div>
+            
+            <div>
+                <label for="raca">Raça:</label>
+                <select id="raca" name="raca">
+                    <option value="Humano">Humano</option>
+                    <option value="Anão">Anão</option>
+                    <option value="Elfo">Elfo</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="classe">Classe:</label>
+                <select id="classe" name="classe">
+                    <option value="Guerreiro">Guerreiro</option>
+                    <option value="Ladino">Ladino</option>
+                    <option value="Mago">Mago</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="metodo">Método de Rolagem:</label>
+                <select id="metodo" name="metodo">
+                    <option value="Classico">Clássico (3d6 em ordem)</option>
+                    <option value="Aventureiro">Aventureiro (3d6, distribua)</option>
+                    <option value="Heroico">Heroico (4d6k3, distribua)</option>
+                </select>
+            </div>
+            
+            <button type="submit">Próximo Passo</button>
+        </form>
+    </div>
+</body>
+</html>

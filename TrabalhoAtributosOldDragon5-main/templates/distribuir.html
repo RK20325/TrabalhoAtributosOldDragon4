@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribuir Atributos</title>
+    <!-- Inclui o Tailwind CSS para um design rápido e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define a fonte Inter como padrão */
+        body { font-family: 'Inter', sans-serif; background-color: rgb(191, 121, 121);; }
+        .card { box-shadow: 0 4px 6px rgba(62, 28, 28, 0.1); }
+    </style>
+</head>
+<body class="p-8 flex justify-center items-center min-h-screen">
+
+    <div class="card bg-white p-8 rounded-xl w-full max-w-lg">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Distribuir seus Atributos</h1>
+        
+        <!-- Exibe os valores rolados de forma clara -->
+        <p class="mb-6 text-lg text-center font-semibold text-indigo-600 border-b pb-3">
+            Valores Rolados: {{ valores | join(', ') }}
+        </p>
+
+        <!-- Mensagem de erro para o JavaScript -->
+        <p id="error-msg" class="text-red-500 text-sm mb-4 font-medium text-center"></p>
+
+        <form id="distribuir-form" action="{{ url_for('salvar_distribuicao') }}" method="POST">
+            
+            <!-- Dados Ocultos para Reconstrução do Personagem no backend -->
+            <input type="hidden" name="nome" value="{{ nome }}">
+            <input type="hidden" name="raca" value="{{ raca }}">
+            <input type="hidden" name="classe" value="{{ classe }}">
+
+            <!-- Lista de valores rolados para uso no JS (separada por vírgula) -->
+            <input type="hidden" id="valores-rolados-input" value="{{ valores | join(',') }}">
+
+            <!-- Campos de Atributo -->
+            {% set atributos = ['FOR', 'DES', 'CON', 'INT', 'SAB', 'CAR'] %}
+            {% for atributo in atributos %}
+            <div class="mb-4 flex items-center">
+                <label for="{{ atributo }}" class="w-1/3 text-gray-700 font-medium">{{ atributo }} ({{ loop.index }}/6):</label>
+                <select id="{{ atributo }}" name="{{ atributo }}" class="atributo-select w-2/3 p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">-- Escolha um Valor --</option>
+                    {% for valor in valores %}
+                    <option value="{{ valor }}">{{ valor }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+            
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 mt-6">
+                Salvar Personagem
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('distribuir-form').addEventListener('submit', function(event) {
+            const selects = document.querySelectorAll('.atributo-select');
+            const valoresUsados = {}; // Dicionário para contar a frequência de cada valor
+            let erro = null;
+            let atributosPreenchidos = 0;
+
+            // 1. Coleta os valores do input oculto e os converte para inteiros
+            const valoresPermitidos = document.getElementById('valores-rolados-input').value
+                .split(',')
+                .map(v => parseInt(v.trim()));
+
+            // Itera sobre todos os campos SELECT
+            for (const select of selects) {
+                const valor = select.value;
+
+                if (valor === "") {
+                    // 2. Erro se algum campo não foi preenchido
+                    erro = "Por favor, atribua um valor a todos os 6 atributos.";
+                    break;
+                }
+                
+                // Converte o valor preenchido para inteiro
+                const valInt = parseInt(valor);
+
+                // Conta quantas vezes este valor foi usado
+                valoresUsados[valInt] = (valoresUsados[valInt] || 0) + 1;
+                atributosPreenchidos++;
+            }
+            
+            // 3. Verifica se todos os 6 atributos foram preenchidos (redundante, mas bom)
+            if (erro === null && atributosPreenchidos !== 6) {
+                 erro = "Erro interno: Nem todos os 6 atributos foram preenchidos.";
+            }
+
+            // 4. Verifica se a contagem de cada valor bate com a lista original
+            if (erro === null) {
+                // Cria um objeto de frequência para os valores originais
+                const frequenciaPermitida = {};
+                for (const val of valoresPermitidos) {
+                    frequenciaPermitida[val] = (frequenciaPermitida[val] || 0) + 1;
+                }
+
+                // Compara as chaves e as contagens
+                const chavesUsadas = Object.keys(valoresUsados).map(Number);
+                const chavesPermitidas = Object.keys(frequenciaPermitida).map(Number);
+
+                // Se o número de valores únicos for diferente
+                if (chavesUsadas.length !== chavesPermitidas.length) {
+                    erro = "Você não pode usar valores que não foram rolados.";
+                } else {
+                    // Verifica se a frequência de cada valor rolado é respeitada
+                    for (const val in frequenciaPermitida) {
+                        const valInt = parseInt(val);
+                        if (frequenciaPermitida[valInt] !== (valoresUsados[valInt] || 0)) {
+                            // Este é o erro principal: usar o mesmo valor que não deveria ou deixar de usar um valor rolado.
+                            erro = "Você deve usar exatamente os 6 valores rolados, sem repetir valores únicos.";
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            // --- AÇÃO FINAL ---
+            if (erro) {
+                event.preventDefault(); // Impede o envio do formulário
+                document.getElementById('error-msg').textContent = erro;
+            } else {
+                // Limpa a mensagem de erro se a distribuição estiver correta
+                document.getElementById('error-msg').textContent = '';
+                // O formulário será enviado
+            }
+        });
+    </script>
+</body>
+</html>
